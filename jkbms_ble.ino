@@ -4,10 +4,11 @@
 #define serviceUUID "FFE0"
 #define charUUID "FFE1"
 
-#define JKBMSaddress "c8:47:8c:e4:56:6b"   // mac address of JKBMS
+#define JKBMSaddress "c8:47:8c:e4:56:6a"   // mac address of JKBMS
 
 byte getInfo[] =        {0xaa, 0x55, 0x90, 0xeb, 0x96, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10};
 byte getdeviceInfo[] =  {0xaa, 0x55, 0x90, 0xeb, 0x97, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11};
+byte setDevice[] =      {0xaa, 0x55, 0x90, 0xeb, 0x1E, 0x04, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF};
 
 NimBLEAdvertisedDevice advDevice;
 NimBLEClient* pClient = nullptr;
@@ -128,6 +129,11 @@ void notifyCallback(NimBLERemoteCharacteristic* pCharacteristic, uint8_t* pData,
         Serial.println((float) (receivedBytes[132] * 0.1f));
         //Serial.println( (float) (((receivedBytes[132] << 8) | receivedBytes[133]) * 0.1f) );
 
+        // turn on Discharging if it is off
+        if (receivedBytes[167] == 0) {
+          setDischarge(true);
+        }
+
         if (pClient) pClient->disconnect();
         hasNewData = false;
         isNotified = false;
@@ -190,6 +196,16 @@ bool connectToServer() {
   }
 
   return true;
+}
+
+void setDischarge(bool sw) {
+  uint32_t value = sw?0x00000001:0x00000000;
+  setDevice[6] = value >> 0;
+  setDevice[7] = value >> 8;
+  setDevice[8] = value >> 16;
+  setDevice[9] = value >> 24;
+  setDevice[19] = crc(setDevice, sizeof(setDevice) - 1);
+  Serial.println(pChr->writeValue(setDevice, sizeof(setDevice), false));
 }
 
 void setup() {
