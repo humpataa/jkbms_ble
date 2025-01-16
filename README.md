@@ -1,5 +1,6 @@
 # jkbms_ble
 a basic sketch that scans for a JKBMS, connects and retrieves status
+- added a function to set discharging ON/OFF
 
 uses NimBLE https://github.com/h2zero/NimBLE-Arduino, tested with v2.2.0
 based on https://github.com/jblance/jkbms and https://github.com/syssi/esphome-jk-bms
