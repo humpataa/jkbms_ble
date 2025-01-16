@@ -1,6 +1,9 @@
 # jkbms_ble
 a basic sketch that scans for a JKBMS, connects and retrieves status
-- added a function to set Discharging ON/OFF (use 0x1D instead if 0x1E if you want to switch Charging)
+- added a function to set Discharging ON/OFF
+
+use 0x1D instead if 0x1E if you want to switch Charging, here's details about the protocol:
+https://github.com/syssi/esphome-jk-bms/blob/main/docs/protocol-design-ble.md
 
 uses NimBLE https://github.com/h2zero/NimBLE-Arduino, tested with v2.2.0
 based on https://github.com/jblance/jkbms and https://github.com/syssi/esphome-jk-bms
